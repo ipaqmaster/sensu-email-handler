@@ -235,9 +235,11 @@ func checkArgs(_ *corev2.Event) error {
 		config.AuthMethod = AuthMethodLogin
 	}
 	if config.Insecure {
-		config.SmtpPort = 25
-		config.AuthMethod = AuthMethodNone
 		config.TLSSkipVerify = true
+
+    // Avoid clobbering custom values
+    if config.SmtpPort == uint64(defaultSmtpPort) {	config.SmtpPort = 25 }
+    if config.AuthMethod == AuthMethodPlain {	config.AuthMethod = AuthMethodNone }
 	}
 
 	switch config.AuthMethod {
